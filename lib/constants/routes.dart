@@ -1,6 +1,7 @@
 const loginRoute = "/login/";
 const registerRoute = "/register/";
 const notesRoute = "/notes/";
+const verifyEmailRoute = "/verify-email/";
 
 String? validateEmail(String? value) {
   String pattern =
