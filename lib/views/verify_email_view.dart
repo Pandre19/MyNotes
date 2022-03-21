@@ -3,6 +3,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/constants/routes.dart';
 import "dart:developer" as devtools show log;
+import '../services/auth/auth_exceptions.dart';
+import '../services/auth/auth_service.dart';
 import '../utilities/show_error_dialog.dart';
 
 class VerifyEmailView extends StatefulWidget {
@@ -59,8 +61,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
             ),
             TextButton(
               onPressed: () async {
-                final user = FirebaseAuth.instance.currentUser;
-                await user!.sendEmailVerification();
+                await AuthService.firebase().sendEmailVerification();
               },
               child: const Text("Send email verification"),
             ),
@@ -180,24 +181,17 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                             final email = _reemail.text;
                             final password = _repassword.text;
                             try {
-                              await FirebaseAuth.instance
-                                  .signInWithEmailAndPassword(
-                                email: email,
-                                password: password,
-                              );
+                              await AuthService.firebase()
+                                  .logIn(email: email, password: password);
                               Navigator.of(context).pop(true);
-                            } on FirebaseAuthException catch (e) {
-                              if (e.code == "user-not-found") {
-                                devtools.log("User not found");
-                                showErrorDialog(context, "User not found");
-                              } else if (e.code == "wrong-password") {
-                                devtools.log("Wrong Password");
-                                showErrorDialog(context, "Wrong Password");
-                              } else {
-                                showErrorDialog(context, "Error: ${e.code}");
-                              }
-                            } catch (e) {
-                              showErrorDialog(context, e.toString());
+                            } on UserNotFoundAuthException {
+                              devtools.log("User not found");
+                              showErrorDialog(context, "User not found");
+                            } on WrongPasswordAuthException {
+                              devtools.log("Wrong Password");
+                              showErrorDialog(context, "Wrong Password");
+                            } on GenericAuthException {
+                              showErrorDialog(context, "Authentication error");
                             }
                           }
                         },
