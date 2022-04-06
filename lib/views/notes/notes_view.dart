@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/services/auth/auth_service.dart';
 
-import '../enums/menu_action.dart';
-import '../services/crud/notes_service.dart';
+import '../../enums/menu_action.dart';
+import '../../services/crud/notes_service.dart';
 
 class NotesView extends StatefulWidget {
   const NotesView({Key? key}) : super(key: key);
@@ -19,6 +19,8 @@ class _NotesViewState extends State<NotesView> {
   @override
   void initState() {
     _notesService = NotesService();
+    final NotesService _notesService2 = NotesService();
+
     // _notesService.open();
     //No hay necesidad ya que las funciones de notesservice se encrgan de
     //confirmar que la base de datos está abierta
@@ -35,8 +37,14 @@ class _NotesViewState extends State<NotesView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Main UI"),
+        title: const Text("Your Notes"),
         actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed(newNoteRoute);
+            },
+            icon: const Icon(Icons.add),
+          ),
           PopupMenuButton<MenuAction>(
             offset: const Offset(2, 60),
             onSelected: (value) async {
@@ -77,6 +85,8 @@ class _NotesViewState extends State<NotesView> {
                   stream: _notesService.allNotes,
                   builder: (context, snapshot) {
                     switch (snapshot.connectionState) {
+                      //usa waiting y no done porque el stream se supone que no tendrá final
+                      //y siempre estará abierto a cambios
                       case ConnectionState.waiting:
                         return const Text("Waiting for all notes..");
                       default:
