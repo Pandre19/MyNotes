@@ -85,10 +85,13 @@ class _NotesViewState extends State<NotesView> {
                   stream: _notesService.allNotes,
                   builder: (context, snapshot) {
                     switch (snapshot.connectionState) {
-                      //usa waiting y no done porque el stream se supone que no tendrá final
-                      //y siempre estará abierto a cambios
+                      //usa waiting cuando por ejemplo la lista del stream esta vacía
+                      //esperando el primer elemento. Una vez que tenga un elemento de
+                      //la conección será activa
                       case ConnectionState.waiting:
+                      case ConnectionState.active:
                         return const Text("Waiting for all notes..");
+                      //ambos casos dará el mismo return
                       default:
                         return const CircularProgressIndicator();
                     }
