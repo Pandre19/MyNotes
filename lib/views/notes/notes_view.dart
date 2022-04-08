@@ -27,11 +27,11 @@ class _NotesViewState extends State<NotesView> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    _notesService.close();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   _notesService.close();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +90,52 @@ class _NotesViewState extends State<NotesView> {
                       //la conección será activa
                       case ConnectionState.waiting:
                       case ConnectionState.active:
-                        return const Text("Waiting for all notes..");
+                        if (snapshot.hasData) {
+                          final allNotes = snapshot.data as List<DatabaseNote>;
+                          return Container(
+                            padding: const EdgeInsets.all(10),
+                            child: ListView.separated(
+                              itemCount: allNotes.length,
+                              itemBuilder: (context, index) {
+                                final note = allNotes[index];
+                                return Card(
+                                  elevation: 10,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                    side: BorderSide(
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  child: ListTile(
+                                    contentPadding: const EdgeInsets.all(10),
+                                    title: Text(
+                                      note.title.isEmpty
+                                          ? "-NO TITLE-"
+                                          : note.title,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: note.title.isEmpty
+                                            ? Color.fromARGB(255, 111, 128, 143)
+                                            : Color.fromARGB(255, 59, 149, 185),
+                                      ),
+                                    ),
+                                    subtitle: Text(
+                                      note.text,
+                                      overflow: TextOverflow.ellipsis,
+                                      softWrap: true,
+                                      maxLines: 2,
+                                    ),
+                                  ),
+                                );
+                              },
+                              separatorBuilder: (context, index) {
+                                return const SizedBox(height: 15);
+                              },
+                            ),
+                          );
+                        } else {
+                          return const CircularProgressIndicator();
+                        }
                       //ambos casos dará el mismo return
                       default:
                         return const CircularProgressIndicator();

@@ -98,25 +98,33 @@ class _NewNoteViewState extends State<NewNoteView> {
             case ConnectionState.done:
               _note = snapshot.data as DatabaseNote;
               _setupTextControllerListener();
-              return Form(
-                  child: Column(
-                children: [
-                  TextField(
-                    controller: _titleController,
-                    decoration: const InputDecoration(
-                      hintText: "Your title",
+              return Padding(
+                padding: const EdgeInsets.all(20),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Form(
+                    child: Column(
+                      children: [
+                        TextField(
+                          controller: _titleController,
+                          decoration: const InputDecoration(
+                            hintText: "Your title",
+                          ),
+                        ),
+                        TextField(
+                          controller: _textController,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                          minLines: 30,
+                          decoration: const InputDecoration(
+                            hintText: "Start Typing your note...",
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  TextField(
-                    controller: _textController,
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    decoration: const InputDecoration(
-                      hintText: "Start Typing your note...",
-                    ),
-                  ),
-                ],
-              ));
+                ),
+              );
             default:
               return const CircularProgressIndicator();
           }
