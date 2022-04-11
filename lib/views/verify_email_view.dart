@@ -1,11 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/constants/routes.dart';
 import "dart:developer" as devtools show log;
 import '../services/auth/auth_exceptions.dart';
 import '../services/auth/auth_service.dart';
-import '../utilities/show_error_dialog.dart';
+import '../utilities/dialogs/error_dialog.dart';
 
 class VerifyEmailView extends StatefulWidget {
   VerifyEmailView({Key? key}) : super(key: key);
